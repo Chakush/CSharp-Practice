@@ -1,11 +1,15 @@
 ﻿using OtrsTicketParser;
 using System.Text;
 
-string[] tickets = {
-    "TICKET-101;Иванов Иван;Кассир;Магазин 15",
-    "TICKET-102;Смирнова Анна;Администратор;Магазин 42",
-    "TICKET-103;Петров Алексей;Кладовщик;Магазин 08"
-};
+string pathFile = "tickets.txt";
+
+if (!File.Exists(pathFile))
+{
+    Console.WriteLine($"Файл {pathFile} не найден");
+    return;
+}
+
+string[] tickets = File.ReadAllLines("tickets.txt");
 
 Dictionary<char, string> translitMap = new Dictionary<char, string>
 {
@@ -53,7 +57,11 @@ foreach (var ticket in tickets)
     parsedTicket.Add(newTicket);
 }
 
-foreach (var printTicket in parsedTicket)
+List<string> outputLines = new List<string>();
+
+foreach (var outputTicket in parsedTicket)
 {
-    Console.WriteLine($"Заявка: {printTicket.Id}\nЗаявитель: {printTicket.Fullname}\nДолжность: {printTicket.Position}\nМагазин: {printTicket.Store}\nЛогин: {printTicket.Login}\n");
+    outputLines.Add($"{outputTicket.Id} | {outputTicket.Fullname} | {outputTicket.Position} | {outputTicket.Store} | Логин: {outputTicket.Login}");
 }
+File.WriteAllLines("ready_accounts.txt", outputLines);
+Console.WriteLine("Готово\nДанные сохранены в ready_accounts.txt");
